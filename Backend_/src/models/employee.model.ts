@@ -3,6 +3,7 @@ import { Trade } from "../shared/enums/index";
 
 
 export interface IEmployee {
+    _id: Types.ObjectId;
     userId: Types.ObjectId;
     trade: Trade;
     employeeCode: string;

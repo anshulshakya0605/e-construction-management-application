@@ -71,10 +71,12 @@ export const EMPLOYEE_MESSAGES = {
     EMPLOYEES_FETCHED: "Employees fetched successfully.",
     EMPLOYEE_UPDATED: "Employee updated successfully.",
     EMPLOYEE_NOT_FOUND: "Employee not found.",
+    EMPLOYEE_NOT_ACTIVE: "Employee not active",
     EMPLOYEE_APPROVED: "Employee approved successfully.",
     EMPLOYEE_INVALID_APPROVAL: "Employee Invalid Approval",
     EMPLOYEE_REJECTED: "Employee rejected successfully.",
     TRADE_REQUIRED: "Employee trade is required.",
+    EMPLOYEE_INVALID_ID: "Employee id is invalid."
 } as const;
 
 export const CLIENT_MESSAGES = {
@@ -121,6 +123,8 @@ export const TASK_MESSAGES = {
     TASK_DELETED: "Task deleted successfully.",
     TASK_NOT_FOUND: "Task not found.",
     TASK_INVALID_TRANSITION: "Invalid task status transition.",
+    TASK_ACCESS_DENIED: "Task access denied.",
+    TASK_INVALID_ID: "Task id is invalid."
 } as const;
 
 export const FLOOR_PLAN_MESSAGES = {

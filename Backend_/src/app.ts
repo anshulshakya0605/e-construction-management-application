@@ -11,6 +11,8 @@ import employeeRouter from './modules/employees/employee.routes.js'
 import clientsRouter from './modules/clients/client.routes.js'
 import inquiryRouter from './modules/inquiries/inquiry.routes.js'
 import siteRouter from './modules/sites/site.routes.js'
+import taskRouter from './modules/tasks/task.routes.js'
+
 
 const app = express();
 
@@ -72,6 +74,11 @@ apiRouter.use(
 apiRouter.use(
     '/sites',
     siteRouter
+)
+
+apiRouter.use(
+    '/tasks',
+    taskRouter
 )
 
 app.use(notFoundMiddleware)

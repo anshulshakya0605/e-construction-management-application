@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { Client, IClient, Site } from "../../models";
 import { ClientListQuery } from "./client.types";
 
@@ -20,6 +21,16 @@ export const countClients = async (): Promise<number> => {
 export const findClientById = async (clientId: string): Promise<IClient | null> => {
     return Client.findById(clientId)
     .populate("userId", "email fullName phone city role accountStatus isActive emailVerified")
+}
+
+export const findClientByUserId = async (userId: string) => {
+    if (!Types.ObjectId.isValid(userId)) {
+        return null
+    }
+
+    return Client.findOne({
+        userId: new Types.ObjectId(userId)
+    })
 }
 
 export const findClientSites = async (clientId: string) => {

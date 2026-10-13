@@ -100,7 +100,7 @@ export const approveEmployee = async (
         })
     }
 
-    if (user.accountStatus !== AccountStatus.PENDING_APPROVAL) {
+    if (user.accountStatus !== AccountStatus.PENDING_APPROVAL && user.accountStatus !== AccountStatus.REJECTED) {
         throw new ApiError({
             statusCode: HTTP_STATUS.BAD_REQUEST,
             message: EMPLOYEE_MESSAGES.EMPLOYEE_INVALID_APPROVAL,
@@ -140,7 +140,7 @@ export const rejectEmployee = async (
         })
     }
 
-    if (user.accountStatus !== AccountStatus.PENDING_APPROVAL) {
+    if (user.accountStatus === AccountStatus.PENDING_APPROVAL) {
         throw new ApiError({
             statusCode: HTTP_STATUS.BAD_REQUEST,
             message: EMPLOYEE_MESSAGES.EMPLOYEE_INVALID_APPROVAL,
@@ -148,12 +148,28 @@ export const rejectEmployee = async (
         })
     }
 
-    await employeeRepository.rejectedEmployee(employeeId, String(input.rejectionReason));
+    const rejected = await employeeRepository.rejectedEmployee(employeeId, String(input.rejectionReason));
 
-    await employeeRepository.updateUserAccountStatus(
+    if (!rejected) {
+        throw new ApiError({
+            statusCode: HTTP_STATUS.NOT_FOUND,
+            message: EMPLOYEE_MESSAGES.EMPLOYEE_NOT_FOUND,
+            errorCode: ERROR_CODES.EMP_NOT_FOUND
+        })
+    }
+
+   const updatedUser = await employeeRepository.updateUserAccountStatus(
         String(employee.userId),
         AccountStatus.REJECTED
     )
+
+    if (!updatedUser) {
+        throw new ApiError({
+            statusCode: HTTP_STATUS.NOT_FOUND,
+            message: USER_MESSAGES.USER_NOT_FOUND,
+            errorCode: ERROR_CODES.USER_NOT_FOUND
+        })
+    }
 
     return getEmployeeById(employeeId);
 

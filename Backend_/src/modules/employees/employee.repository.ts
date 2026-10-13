@@ -78,10 +78,10 @@ export const findEmployeesByUserIds = async (
     }
 
     return Employee.find(employeeFilter)
-    .populate("userId", "email fullName phone city role accountStatus, isActive emailVerified")
-    .sort({ createdAt: -1 })
-    .skip((page - 1) * limit)
-    .limit(limit)
+        .populate("userId", "email fullName phone city role accountStatus, isActive emailVerified")
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
 }
 
 export const countEmployeeByUserIds = async (
@@ -125,7 +125,12 @@ export const updateUserAccountStatus = async (
 
     return User.findByIdAndUpdate(
         userId,
-        { accountStatus },
+        {
+            $set: {
+                accountStatus,
+                isActive: accountStatus === AccountStatus.ACTIVE 
+            }
+        },
         { new: true, runValidators: true })
 }
 
@@ -136,9 +141,13 @@ export const approveEmployee = async (
     return Employee.findByIdAndUpdate(
         employeeId,
         {
-            approvedById,
-            approvedAt: new Date(),
-            rejectionReason: undefined
+            $set: {
+                approvedById,
+                approvedAt: new Date(),
+            },
+            $unset: {
+                rejectionReason: ""
+            }
         },
         {
             new: true,
@@ -156,7 +165,13 @@ export const rejectedEmployee = async (
     return Employee.findByIdAndUpdate(
         employeeId,
         {
-            rejectionReason
+            $set: {
+                rejectionReason
+            },
+            $unset: {
+                approvedAt: "",
+                approvedById: ""
+            }
         },
         {
             new: true,
