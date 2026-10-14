@@ -2,8 +2,9 @@ import { RequestHandler } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import * as siteService from './site.service.js'
 import { sendListSuccess, sendSuccess } from "../../utils/response";
-import { HTTP_STATUS, SITE_MESSAGES } from "../../shared/constants";
+import { HTTP_STATUS, SITE_MESSAGES, TASK_MESSAGES } from "../../shared/constants";
 import { City, SiteStatus, SiteType } from "../../shared/enums";
+import { TaskListQuery } from "../tasks/task.types";
 
 
 
@@ -42,6 +43,44 @@ export const getSites: RequestHandler = catchAsync(
             SITE_MESSAGES.SITES_FETCHED,
             result.data,
             result.pagination,
+            String(req.id)
+        )
+    }
+)
+
+export const getSiteTasks: RequestHandler = catchAsync(
+    async (req, res) => {
+        const result = await siteService.getSiteTasks(
+            req.params.id,
+            req.query as unknown as TaskListQuery,
+            String(req.user!.userId),
+            req.user!.role
+        )
+
+        return sendListSuccess(
+            res,
+            HTTP_STATUS.OK,
+            TASK_MESSAGES.TASKS_FETCHED,
+            result.data,
+            result.pagination,
+            String(req.id)
+        );
+    }
+)
+
+export const getSiteProgress: RequestHandler = catchAsync(
+    async (req, res) => {
+        const result = await siteService.getSiteProgress(
+            req.params.id,
+            String(req.user!.userId),
+            req.user!.role
+        )
+
+        return sendSuccess(
+            res,
+            HTTP_STATUS.OK,
+            SITE_MESSAGES.SITE_PROGRESS_FETCHED,
+            result,
             String(req.id)
         )
     }

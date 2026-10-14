@@ -9,7 +9,7 @@ import * as clientRepository from '../clients/client.repository.js'
 import { AccountStatus, Role, TaskStatus } from "../../shared/enums";
 
 
-const mapTaskResponse = (task: TaskWithRelations): TaskResponse => {
+export const mapTaskResponse = (task: TaskWithRelations): TaskResponse => {
     const getId = (value: Types.ObjectId | { _id: Types.ObjectId } | undefined) => {
 
         if (!value) return undefined;
