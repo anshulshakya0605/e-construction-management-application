@@ -91,6 +91,6 @@ export const getClientSites = async (
     });
   }
 
-  return clientRepository.findClientSites(clientId);
+  return clientRepository.findClientSites(String(client._id));
 
 }

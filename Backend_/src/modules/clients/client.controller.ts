@@ -42,7 +42,7 @@ export const getClientById: RequestHandler = catchAsync(
 
 export const getClientSites: RequestHandler = catchAsync(
     async (req, res) => {
-        const sites = await clientService.getClientSites(req.params.id, req.user!.userId, req.user!.role)
+        const sites = await clientService.getClientSites(req.params.id, String(req.user!.userId), req.user!.role)
         return sendSuccess(
             res, 
             HTTP_STATUS.OK,

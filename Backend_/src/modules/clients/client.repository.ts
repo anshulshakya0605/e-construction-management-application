@@ -34,7 +34,7 @@ export const findClientByUserId = async (userId: string) => {
 }
 
 export const findClientSites = async (clientId: string) => {
-    return;
+    return Site.find({clientId}).sort({createdAt: -1}).lean();
 }
 
 export const deleteClient = async (
