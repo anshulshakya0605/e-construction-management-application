@@ -55,7 +55,7 @@ const employeeSchema = new Schema<IEmployee>(
 
         approvedAt: {
             type: Date,
-        },
+        },              
 
         rejectionReason: {
             type: String,
