@@ -131,11 +131,13 @@ export const FLOOR_PLAN_MESSAGES = {
     FP_CREATED: "Floor plan created successfully.",
     FP_FETCHED: "Floor plan fetched successfully.",
     FPS_FETCHED: "Floor plans fetched successfully.",
+    FP_UPDATED: "Floor plan updated successfully.",
     FP_APPROVED: "Floor plan approved successfully.",
     FP_REJECTED: "Floor plan rejected successfully.",
     FP_DELETED: "Floor plan deleted successfully.",
     FP_NOT_FOUND: "Floor plan not found.",
     FP_ALREADY_REVIEWED: "Floor plan has already been reviewed.",
+    FP_ALREADY_APPROVED: "Approved floor plans cannot be edited. Create a new version instead.",
 } as const;
 
 export const MAP_MESSAGES = {
