@@ -13,6 +13,7 @@ import inquiryRouter from './modules/inquiries/inquiry.routes.js'
 import siteRouter from './modules/sites/site.routes.js'
 import taskRouter from './modules/tasks/task.routes.js'
 import floorPlansRouter from './modules/floor-plans/floorPlan.routes.js'
+import mapRouter from "./modules/maps/map.routes.js"
 
 const app = express();
 
@@ -84,6 +85,11 @@ apiRouter.use(
 apiRouter.use(
     '/floor-plans',
     floorPlansRouter
+)
+
+apiRouter.use(
+    '/maps',
+    mapRouter
 )
 
 app.use(notFoundMiddleware)

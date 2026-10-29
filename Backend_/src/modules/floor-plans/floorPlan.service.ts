@@ -202,10 +202,6 @@ export const getFloorPlanById = async (
 
     const floorPlan = await floorPlanRepository.findFloorPlanById(floorPlanId);
 
-    console.log("FloorPlan: ", floorPlan)
-    console.log("floorPlanId: ", floorPlanId);
-    
-
     if (!floorPlan) {
         throw new ApiError({
             statusCode: HTTP_STATUS.NOT_FOUND,
