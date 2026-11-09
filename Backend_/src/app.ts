@@ -14,6 +14,7 @@ import siteRouter from './modules/sites/site.routes.js'
 import taskRouter from './modules/tasks/task.routes.js'
 import floorPlansRouter from './modules/floor-plans/floorPlan.routes.js'
 import mapRouter from "./modules/maps/map.routes.js"
+import userRouter from './modules/users/user.routes.js'
 
 const app = express();
 
@@ -56,6 +57,10 @@ apiRouter.use(
     "/auth",
     authRouter,
 );
+
+apiRouter.use("/users",
+    userRouter
+)
 
 apiRouter.use(
     '/employees',

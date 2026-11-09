@@ -313,16 +313,6 @@ export const verifyEmail = async (
         });
     }
 
-    console.log(
-    "OTP PROVIDED:",
-    Boolean(input.otp),
-);
-
-console.log(
-    "OTP HASH FOUND:",
-    Boolean(otp.otpHash),
-);
-
     const isOtpValid = await compareOtp(
         input.otp,
         otp.otpHash,

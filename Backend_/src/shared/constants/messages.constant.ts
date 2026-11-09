@@ -57,12 +57,18 @@ export const PASSWORD_MESSAGES = {
 export const USER_MESSAGES = {
     USER_FETCHED: "User fetched successfully.",
     USERS_FETCHED: "Users fetched successfully.",
+    USER_STATS_FETCHED: "User stats fetched.",
     USER_UPDATED: "User updated successfully.",
+    USER_STATUS_UPDATED: "User status updated.",
+    USER_ROLE_UPDATED: "User role updated.",
     USER_DELETED: "User deleted successfully.",
     USER_NOT_FOUND: "User not found.",
     USER_DEACTIVATED: "User deactivated successfully.",
     USER_ACTIVATED: "User activated successfully.",
-    USER_ID_INVALID: "User id is invalid."
+    USER_CANNOT_DEACTIVATE: 'User cannot deactivate',
+    CANNOT_CHANGE_OWN_ROLE: "Cannot change own role.",
+    ADMIN_ROLE_ASSIGNMENT_NOT_ALLOWED: "Admin role assignment not allowed.",
+    USER_ID_INVALID: "User id is invalid.",
 } as const;
 
 export const EMPLOYEE_MESSAGES = {

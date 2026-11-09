@@ -161,14 +161,6 @@ export const getNearbyMapSites = async(filters: NearbySitesQueryDto): Promise<Ma
 
     const mapSites = await mapRepository.findNearbySites(filters);
 
-    if (!mapSites) {
-        throw new ApiError({
-            statusCode: HTTP_STATUS.NOT_FOUND,
-            message: SITE_MESSAGES.SITE_NOT_FOUND,
-            errorCode: ERROR_CODES.SITE_NOT_FOUND
-        })
-    }
-
     return mapSitesToFeaturesCollection(mapSites);
 }
 
