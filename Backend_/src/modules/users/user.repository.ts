@@ -38,30 +38,30 @@ export const findUsers = async(query: UserListQuery): Promise<{users: IUser[]; t
     };
 };
 
-export const findUserById = async(userId: string) => {
-    if (!Types.ObjectId.isValid(userId)) return null;
+export const findUserById = async(id: string) => {
+    if (!Types.ObjectId.isValid(id)) return null;
 
-        return User.findById(userId).lean();
+        return User.findById(id).lean();
 
 };
 
 export const updateUserStatus = async(
-    userId: string,
+    id: string,
     isActive: boolean
 ) => {
     return User.findByIdAndUpdate(
-            userId,
+            id,
             { $set: { isActive } },
             { new: true, runValidators: true },
         ).lean();
 };
 
 export const updateUserRole = async(
-    userId: string,
+    id: string,
     role: IUser['role']
 ) => {
     return User.findByIdAndUpdate(
-            userId,
+            id,
             { $set: { role } },
             { new: true, runValidators: true },
         ).lean();
@@ -99,9 +99,12 @@ export const findUserStats = async() => {
         };
 }
 
-export const deleteUser = async (userId: string) => {
+export const deleteUser = async (id: string) => {
     
-    if (!Types.ObjectId.isValid(userId)) return;
+    if (!Types.ObjectId.isValid(id)) return;
 
-    return User.findByIdAndDelete(userId);
+    return User.findByIdAndUpdate(id,
+        {$set: {isActive: false}},
+        {new: true, runValidators: true}
+    ).lean()
 }

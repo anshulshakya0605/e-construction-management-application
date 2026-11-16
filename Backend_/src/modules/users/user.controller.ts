@@ -55,8 +55,11 @@ export const getUserStats: RequestHandler = catchAsync(
 
 export const updateUserStatus: RequestHandler = catchAsync(
     async (req, res) => {
-
         const input = req.body as unknown as UpdateUserStatusInput
+        console.log("req.params.id: ", req.params.id);
+        console.log("isActive: ", input.isActive);
+        console.log("userId: ", req.user!.userId);
+        
         const result = await userService.updateUserStatus(
             req.params.id,
             input.isActive,
@@ -78,11 +81,9 @@ export const updateUserStatus: RequestHandler = catchAsync(
 export const updateUserRole: RequestHandler = catchAsync(
     async (req, res) => {
 
-        const input = req.body as unknown as UpdateUserRoleInput;
-
         const result = await userService.updateUserRole(
             req.params.id,
-            input.role,
+            req.body.role,
             req.user!.userId
         );
 
@@ -99,7 +100,7 @@ export const updateUserRole: RequestHandler = catchAsync(
 export const deleteUser: RequestHandler = catchAsync(
     async (req, res) => {
 
-        const result = await userService.deleteUser(req.params.id);
+        const result = await userService.deleteUser(req.params.id, req.user!.userId);
         
         return sendSuccess(
             res,

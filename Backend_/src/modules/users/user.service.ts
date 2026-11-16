@@ -1,7 +1,7 @@
 import { IUser } from "../../models";
 import { UserListQuery, UserResponse, UserStats } from "./user.types";
 import * as userRepository from './user.repository.js'
-import { CONFIG, ERROR_CODES, HTTP_STATUS, USER_MESSAGES } from "../../shared/constants";
+import { CONFIG, EMPLOYEE_MESSAGES, ERROR_CODES, HTTP_STATUS, USER_MESSAGES } from "../../shared/constants";
 import { Types } from "mongoose";
 import { ApiError } from "../../utils/ApiError";
 import { Role } from "../../shared/enums";
@@ -40,8 +40,8 @@ export const getAllUsers = async (query: UserListQuery) => {
     }
 }
 
-export const getUserById = async (userId: string): Promise<UserResponse> => {
-    if (!Types.ObjectId.isValid(userId)) {
+export const getUserById = async (id: string): Promise<UserResponse> => {
+    if (!Types.ObjectId.isValid(id)) {
         throw new ApiError({
             statusCode: HTTP_STATUS.BAD_REQUEST,
             message: USER_MESSAGES.USER_ID_INVALID,
@@ -49,7 +49,7 @@ export const getUserById = async (userId: string): Promise<UserResponse> => {
         })
     }
 
-    const user = await userRepository.findUserById(userId);
+    const user = await userRepository.findUserById(id);
     if (!user) {
         throw new ApiError({
             statusCode: HTTP_STATUS.NOT_FOUND,
@@ -61,12 +61,12 @@ export const getUserById = async (userId: string): Promise<UserResponse> => {
 }
 
 export const updateUserStatus = async(
-    userId: string,
+    id: string,
     isActive: boolean,
-    adminId: string
+    userId: string
 ): Promise<UserResponse> => {
 
-    if (!Types.ObjectId.isValid(userId)) {
+    if (!Types.ObjectId.isValid(id)) {
         throw new ApiError({
             statusCode: HTTP_STATUS.BAD_REQUEST,
             message: USER_MESSAGES.USER_ID_INVALID,
@@ -74,15 +74,15 @@ export const updateUserStatus = async(
         })
     }
 
-    if (userId === adminId && !isActive) {
+    if (id === userId && !isActive) {
         throw new ApiError({
             statusCode: HTTP_STATUS.BAD_REQUEST,
-            message: USER_MESSAGES.USER_DEACTIVATED,
+            message: USER_MESSAGES.USER_CANNOT_DEACTIVATE,
             errorCode: ERROR_CODES.USER_INACTIVE
         })
     }
 
-    const user = await userRepository.updateUserStatus(userId, isActive);
+    const user = await userRepository.updateUserStatus(id, isActive);
     if (!user) {
         throw new ApiError({
             statusCode: HTTP_STATUS.NOT_FOUND,
@@ -95,14 +95,14 @@ export const updateUserStatus = async(
 }
 
 export const updateUserRole = async(
-    userId: string,
+    id: string,
     role: Role,
-    adminId: string,
+    userId: string,
 ): Promise<UserResponse> => {
 
     // give an error when pass the wrong id
 
-    if (!Types.ObjectId.isValid(userId)) {
+    if (!Types.ObjectId.isValid(id)) {
         throw new ApiError({
             statusCode: HTTP_STATUS.BAD_REQUEST,
             message: USER_MESSAGES.USER_ID_INVALID,
@@ -111,7 +111,7 @@ export const updateUserRole = async(
     }
 
     // admin cannot change own role
-    if (userId === adminId) {
+    if (id === userId) {
         throw new ApiError({
             statusCode: HTTP_STATUS.FORBIDDEN,
             message: USER_MESSAGES.CANNOT_CHANGE_OWN_ROLE,
@@ -119,8 +119,16 @@ export const updateUserRole = async(
         })
     }
 
+    if (role !== Role.ADMIN) {
+        throw new ApiError({
+            statusCode: HTTP_STATUS.FORBIDDEN,
+            message: USER_MESSAGES.ADMIN_ROLE_ASSIGNMENT_NOT_ALLOWED,
+            errorCode: ERROR_CODES.AUTH_FORBIDDEN
+        })
+    }
+
     // find existing user
-    const existingUser = await userRepository.findUserById(userId);
+    const existingUser = await userRepository.findUserById(id);
     if (!existingUser) {
         throw new ApiError({
             statusCode: HTTP_STATUS.NOT_FOUND,
@@ -129,17 +137,19 @@ export const updateUserRole = async(
         })
     }
 
-    if (role === Role.ADMIN) {
+    // only employee can promoted to ADMIN
+    if (existingUser.role !== Role.EMPLOYEE) {
         throw new ApiError({
             statusCode: HTTP_STATUS.FORBIDDEN,
-            message: USER_MESSAGES.ADMIN_ROLE_ASSIGNMENT_NOT_ALLOWED,
+            message: 'Only employees can be promoted to ADMIN',
             errorCode: ERROR_CODES.AUTH_FORBIDDEN
         })
     }
 
+
     // update user role 
-    const user = await userRepository.updateUserRole(userId, role);
-    if (!user) {
+    const updatedUser = await userRepository.updateUserRole(id, Role.ADMIN);
+    if (!updatedUser) {
         throw new ApiError({
             statusCode: HTTP_STATUS.NOT_FOUND,
             message: USER_MESSAGES.USER_NOT_FOUND,
@@ -147,7 +157,7 @@ export const updateUserRole = async(
         })
     }
 
-    return mapUserResponse(user);
+    return mapUserResponse(updatedUser);
 }
 
 export const getUserStats = async(): Promise<UserStats> => {
@@ -155,17 +165,24 @@ export const getUserStats = async(): Promise<UserStats> => {
 }
 
 
-export const deleteUser = async (userId: string): Promise<UserResponse> => {
+export const deleteUser = async (id: string, userId: string): Promise<UserResponse> => {
 
-    if (!Types.ObjectId.isValid(userId)) {
+    if (!Types.ObjectId.isValid(id)) {
         throw new ApiError({
             statusCode: HTTP_STATUS.BAD_REQUEST,
             message: USER_MESSAGES.USER_ID_INVALID,
             errorCode: ERROR_CODES.INVALID_ID
         })
     }
-
-    const user = await userRepository.findUserById(userId);
+    
+    if (id === userId) {
+        throw new ApiError({
+            statusCode: HTTP_STATUS.BAD_REQUEST,
+            message: USER_MESSAGES.USER_CANNOT_DEACTIVATE,
+            errorCode: ERROR_CODES.AUTH_FORBIDDEN
+        })
+    }
+    const user = await userRepository.findUserById(id);
     if (!user) {
         throw new ApiError({
             statusCode: HTTP_STATUS.NOT_FOUND,
@@ -174,7 +191,15 @@ export const deleteUser = async (userId: string): Promise<UserResponse> => {
         })
     }
 
-    const deleteUser = await userRepository.deleteUser(userId);
+    const deleteUser = await userRepository.deleteUser(id);
     
+    if (!deleteUser) {
+        throw new ApiError({
+            statusCode: HTTP_STATUS.NOT_FOUND,
+            message: USER_MESSAGES.USER_NOT_FOUND,
+            errorCode: ERROR_CODES.USER_NOT_FOUND
+        })
+    }
+
     return mapUserResponse(deleteUser);
 }
