@@ -2,8 +2,15 @@ import pino from "pino";
 
 import { env } from "./env.js";
 import { LOGGER_CONFIG } from "../shared/constants/logger.constant.js";
+import path from "node:path";
+import fs from 'node:fs'
 
 const isProduction = env.NODE_ENV === "production";
+
+const logDirectory = path.resolve(env.LOG_DIR);
+if (isProduction) {
+    fs.mkdirSync(logDirectory, {recursive: true})
+}
 
 const logger = isProduction
     ? pino(
@@ -21,13 +28,13 @@ const logger = isProduction
               },
               {
                   stream: pino.destination(
-                      `${env.LOG_DIR}/${LOGGER_CONFIG.APP_LOG_FILE}`,
+                      path.join(logDirectory, LOGGER_CONFIG.APP_LOG_FILE),
                   ),
               },
               {
                   level: "error",
                   stream: pino.destination(
-                      `${env.LOG_DIR}/${LOGGER_CONFIG.ERROR_LOG_FILE}`,
+                      path.join(logDirectory, LOGGER_CONFIG.ERROR_LOG_FILE),
                   ),
               },
           ]),

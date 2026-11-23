@@ -4,12 +4,14 @@ import { assignInquiryInputSchema, createInquirySchema, inquiryListQuerySchema, 
 import { assignInquiry, convertInquiryToClient, createInquiry, deleteInquiry, getInquiries, getInquiryById, updateInquiryStatus } from "./inquiry.controller";
 import { authenticate, authorize } from "../../middleware/auth.middleware";
 import { Role } from "../../shared/enums";
+import { inquiryRateLimiter } from "../../middleware/rateLimit.middleware";
 
 
 const router = Router();
 
 
 router.post('/',
+    inquiryRateLimiter,
     validate(createInquirySchema),
     createInquiry
 )

@@ -41,6 +41,7 @@ import {
     getMe,
     logout,
 } from "./auth.controller.js";
+import { authLimiter, loginRateLimiter } from "../../middleware/rateLimit.middleware.js";
 
 
 const router = Router();
@@ -66,6 +67,7 @@ router.post(
 
 router.post(
     API_ENDPOINTS.AUTH.VERIFY_EMAIL,
+    authLimiter,
     validate(verifyEmailSchema),
     catchAsync(verifyEmail),
 );
@@ -73,6 +75,7 @@ router.post(
 
 router.post(
     API_ENDPOINTS.AUTH.RESEND_VERIFICATION,
+    authLimiter,
     validate(resendVerificationSchema),
     catchAsync(resendVerification),
 );
@@ -80,6 +83,7 @@ router.post(
 
 router.post(
     API_ENDPOINTS.AUTH.LOGIN,
+    loginRateLimiter,
     validate(loginSchema),
     catchAsync(login),
 );
@@ -87,6 +91,7 @@ router.post(
 
 router.post(
     API_ENDPOINTS.AUTH.FORGOT_PASSWORD,
+    authLimiter,
     validate(forgotPasswordSchema),
     catchAsync(forgotPassword),
 );
@@ -94,6 +99,7 @@ router.post(
 
 router.post(
     API_ENDPOINTS.AUTH.VERIFY_RESET_OTP,
+    authLimiter,
     validate(verifyResetOtpSchema),
     catchAsync(verifyResetOtp),
 );
@@ -101,6 +107,7 @@ router.post(
 
 router.post(
     API_ENDPOINTS.AUTH.RESET_PASSWORD,
+    authLimiter,
     validate(resetPasswordSchema),
     catchAsync(resetPassword),
 );
@@ -112,6 +119,7 @@ router.post(
 
 router.patch(
     API_ENDPOINTS.AUTH.CHANGE_PASSWORD,
+    authLimiter,
     authenticate,
     validate(changePasswordSchema),
     catchAsync(changePassword),

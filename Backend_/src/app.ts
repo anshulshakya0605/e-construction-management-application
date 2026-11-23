@@ -15,6 +15,7 @@ import taskRouter from './modules/tasks/task.routes.js'
 import floorPlansRouter from './modules/floor-plans/floorPlan.routes.js'
 import mapRouter from "./modules/maps/map.routes.js"
 import userRouter from './modules/users/user.routes.js'
+import { globalRateLimiter } from "./middleware/rateLimit.middleware";
 
 const app = express();
 
@@ -42,6 +43,9 @@ app.use(
 )
 
 const apiRouter = express.Router();
+
+/// add global rate limiter 
+apiRouter.use(globalRateLimiter)
 
 app.use(
     API.BASE_PATH,

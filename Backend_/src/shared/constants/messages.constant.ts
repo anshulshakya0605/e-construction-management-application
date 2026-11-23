@@ -167,5 +167,5 @@ export const GENERIC_MESSAGES = {
     VALIDATION_ERROR: "Validation failed.",
     UNAUTHORIZED: "Authentication required.",
     FORBIDDEN: "You do not have permission to access this resource.",
-    RATE_LIMIT_EXCEEDED: "Too many requests. Please try again later.",
+    RATE_LIMIT_EXCEEDED: "Too many requests. Please try again after some time.",
 } as const;

@@ -104,25 +104,21 @@ const envSchema = z.object({
         .min(1)
         .default("logs"),
 
-    RATE_LIMIT_WINDOW_MS: z.coerce
+    GLOBAL_WINDOW_MS: z.coerce
         .number()
         .int()
         .positive(),
 
-    RATE_LIMIT_MAX: z.coerce
+    GLOBAL_MAX_REQUESTS: z.coerce
         .number()
         .int()
         .positive(),
 
-    AUTH_RATE_LIMIT_MAX: z.coerce
+    AUTH_WINDOW_MS: z.coerce
         .number()
         .int()
         .positive(),
 
-    INQUIRY_RATE_LIMIT_MAX: z.coerce
-        .number()
-        .int()
-        .positive(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

@@ -14,7 +14,7 @@ const startServer = async (): Promise<void> => {
                 "Server started successfully",
             );
         });
-        logger.info("Real Estate Management Backend Started");
+        logger.info("E - Construction & Real Estate Management Backend Started");
     } catch (error) {
         logger.fatal(
             {
